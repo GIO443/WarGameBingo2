@@ -1,0 +1,9 @@
+each unit of distance of 0.5m
+each turn is 1 minute
+
+Dimensions
+    each man is 0.5m * 0.5m
+    Horse is 0.5m * 1m
+
+Attacking
+    hit dice are 1d(attackDice)
