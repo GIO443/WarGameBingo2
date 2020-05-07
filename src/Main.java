@@ -9,9 +9,8 @@ public class Main {
     static int artnum = 0;
     static int whoesTurn = 0;
     public static void main(String[] args) {
-        System.out.println("pizza\n");
         createGameUnits();
-        
+
         while((UnitList2.size() != 0) || (UnitList1.size() != 0)){
             //removes dead units
             Iterator<Unit> itr1 = UnitList1.iterator();
