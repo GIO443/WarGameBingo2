@@ -99,7 +99,7 @@ public class Main {
                 int xValI = userInput.nextInt();
                 System.out.println("Now the y-coordinate:");
                 int yValI = userInput.nextInt();
-                //user chooses type
+                //User chooses type
                 System.out.println("Potential types of Infantry are: ");
                 System.out.println("Line, Grenadier, and Light.");
                 String typeI = userInput.next();
