@@ -11,23 +11,11 @@ public class Main {
     public static void main(String[] args) {
         createGameUnits();
 
-        while((UnitList2.size() != 0) || (UnitList1.size() != 0)){
-            //removes dead units
-            Iterator<Unit> itr1 = UnitList1.iterator();
-            Iterator<Unit> itr2 = UnitList2.iterator();
+        while((UnitList2.size() != 0) && (UnitList1.size() != 0)){
 
-            while (itr1.hasNext()) {
-                Unit TestedUnit = itr1.next();
-                if (TestedUnit.pop == 0) {
-                    itr1.remove();
-                }
-            }
-            while (itr2.hasNext()) {
-                Unit TestedUnit = itr2.next();
-                if (TestedUnit.pop == 0) {
-                    itr2.remove();
-                }
-            }
+            //removes dead units
+            removeDeadUnits(UnitList1);
+            removeDeadUnits(UnitList2);
 
             //plays turns
             if(whoesTurn%2 == 0) {
@@ -37,19 +25,9 @@ public class Main {
                 whoesTurn++;
             }
 
-            //removed dead units
-            while (itr1.hasNext()) {
-                Unit TestedUnit = itr1.next();
-                if (TestedUnit.pop == 0) {
-                    itr1.remove();
-                }
-            }
-            while (itr2.hasNext()) {
-                Unit TestedUnit = itr2.next();
-                if (TestedUnit.pop == 0) {
-                    itr2.remove();
-                }
-            }
+            //removes dead units
+            removeDeadUnits(UnitList1);
+            removeDeadUnits(UnitList2);
 
             //plays turns
             if((whoesTurn%2 == 1) & (UnitList2.size() != 0)) {
@@ -59,22 +37,17 @@ public class Main {
                 whoesTurn++;
             }
 
-            //removed dead units
-            while (itr1.hasNext()) {
-                Unit TestedUnit = itr1.next();
-                if (TestedUnit.pop == 0) {
-                    itr1.remove();
-                }
-            }
-            while (itr2.hasNext()) {
-                Unit TestedUnit = itr2.next();
-                if (TestedUnit.pop == 0) {
-                    itr2.remove();
-                }
-            }
+            //removes dead units
+            removeDeadUnits(UnitList1);
+            removeDeadUnits(UnitList2);
+
         }
-        if(UnitList2.size() == 0) System.out.println("Team 1 has won!");
-        else System.out.println("Team 2 has won!");
+        if(UnitList2.size() == 0) {
+            System.out.println("Team 1 has won!");
+        }
+        else{
+            System.out.println("Team 2 has won!");
+        }
 
 
     }
@@ -163,6 +136,27 @@ public class Main {
         }
     }
 
+    public static void removeDeadUnits(ArrayList<Unit> a){
+        //removes dead units
+        int i = 0;
+        while(i < a.size()) {
+            if(a.get(i).pop <= 0){
+                a.remove(i);
+            }
+            else i++;
+        }
+    }
+
+    public static void checkRange(Unit attacker, Unit target){
+        int distr = (int) (java.lang.Math.sqrt(Math.pow(attacker.position.x - target.position.x, 2) + Math.pow(attacker.position.y - target.position.y, 2)));
+        if(attacker.range >= distr){
+            System.out.println("Unit " + target.name + " is in range and is " + distr +" range away.");
+        }
+        else{
+            System.out.println("Unit " + " is out of range and is " + distr + "range away.");
+        }
+    }
+
     public static void createInf(int team, Point pos, String type, int dir){
         infnum++;//increments inf counter
         String startName = "Infantry" + infnum;//sets name
@@ -202,6 +196,7 @@ public class Main {
                 }
                 if (e.name.contains("Cavalry")) {
                     e.moved = false;
+                    assert e instanceof Cavalry;
                     cavList.add((Cavalry) e);
                 }
                 if (e.name.contains("Artillery")) {
@@ -219,8 +214,7 @@ public class Main {
                         System.out.println("Your range is " + e.range + ".");
                         System.out.println("Choose target:");
                         for (Unit r : UnitList2) {
-                            int distr = (int) (java.lang.Math.sqrt(Math.pow(r.position.x - e.position.x, 2) + Math.pow(r.position.y - e.position.y, 2)));
-                            System.out.println(r.name + " is " + distr + " away.");
+                            checkRange(e, r);
                         }
                         String tarStr = userInput.next();
                     Unit tar = (new Infantry(team, "", new Point(0,0), "", 1));
@@ -260,15 +254,14 @@ public class Main {
             for (Cavalry e : cavList) {
                 //goes through each
                 System.out.println("Take an action for unit " + e.name + ":");
-                System.out.println("Attack or Move");
+                System.out.println("Attack, Move or Nothing");
                 String action = userInput.next();
                 if (action.equals("Attack")) {
                     //tells user their range and then distance to target
                     System.out.println("Your range is " + e.range + ".");
                     System.out.println("Choose target:");
                     for (Unit r : UnitList2) {
-                        int distr = (int) (java.lang.Math.sqrt(Math.pow(r.position.x - e.position.x, 2) + Math.pow(r.position.y - e.position.y, 2)));
-                        System.out.println(r.name + " is " + distr + " away.");
+                        checkRange(e, r);
                     }
                     String tarStr = userInput.next();
                     Unit tar = (new Cavalry(team, "", new Point(0,0), "", 1));
@@ -307,15 +300,14 @@ public class Main {
             for (Artillery e : artList) {
                 //goes through each
                 System.out.println("Take an action for unit " + e.name + ":");
-                System.out.println("Attack or Move");
+                System.out.println("Attack, Move,or Nothing");
                 String action = userInput.next();
                 if (action.equals("Attack")) {
                     //tells user their range and then distance to target
                     System.out.println("Your range is " + e.range + ".");
                     System.out.println("Choose target:");
                     for (Unit r : UnitList2) {
-                        int distr = (int) (java.lang.Math.sqrt(Math.pow(r.position.x - e.position.x, 2) + Math.pow(r.position.y - e.position.y, 2)));
-                        System.out.println(r.name + " is " + distr + " away.");
+                        checkRange(e, r);
                     }
                     String tarStr = userInput.next();
                     Unit tar = (new Cavalry(team, "", new Point(0,0), "", 1));
@@ -374,15 +366,14 @@ public class Main {
             for (Infantry e : infList) {
                 //goes through each
                 System.out.println("Take an action for unit " + e.name + ":");
-                System.out.println("Attack or Move");
+                System.out.println("Attack, Move, or Nothing");
                 String action = userInput.next();
                 if (action.equals("Attack")) {
                     //tells user their range and then distance to target
                     System.out.println("Your range is " + e.range + ".");
                     System.out.println("Choose target:");
                     for (Unit r : UnitList1) {
-                        int distr = (int) (java.lang.Math.sqrt(Math.pow(r.position.x - e.position.x, 2) + Math.pow(r.position.y - e.position.y, 2)));
-                        System.out.println(r.type + " " + r.name + " is " + distr + " away.");
+                        checkRange(e, r);
                     }
                     String tarStr = userInput.next();
                     Unit tar = (new Infantry(team, "", new Point(0,0), "", 1));
@@ -423,15 +414,14 @@ public class Main {
             for (Cavalry e : cavList) {
                 //goes through each
                 System.out.println("Take an action for unit " + e.name + ":");
-                System.out.println("Attack or Move");
+                System.out.println("Attack, Move, or Nothing");
                 String action = userInput.next();
                 if (action.equals("Attack")) {
                     //tells user their range and then distance to target
                     System.out.println("Your range is " + e.range + ".");
                     System.out.println("Choose target:");
                     for (Unit r : UnitList1) {
-                        int distr = (int) (java.lang.Math.sqrt(Math.pow(r.position.x - e.position.x, 2) + Math.pow(r.position.y - e.position.y, 2)));
-                        System.out.println(r.type + " " + r.name + " is " + distr + " away.");
+                        checkRange(e, r);
                     }
                     String tarStr = userInput.next();
                     Unit tar = (new Cavalry(team, "", new Point(0,0), "", 1));
@@ -471,15 +461,14 @@ public class Main {
             for (Artillery e : artList) {
                 //goes through each
                 System.out.println("Take an action for unit " + e.name + ":");
-                System.out.println("Attack or Move");
+                System.out.println("Attack, Move or Nothing");
                 String action = userInput.next();
                 if (action.equals("Attack")) {
                     //tells user their range and then distance to target
                     System.out.println("Your range is " + e.range + ".");
                     System.out.println("Choose target:");
                     for (Unit r : UnitList1) {
-                        int distr = (int) (java.lang.Math.sqrt(Math.pow(r.position.x - e.position.x, 2) + Math.pow(r.position.y - e.position.y, 2)));
-                        System.out.println(r.type + " " + r.name + " is " + distr + " away.");
+                        checkRange(e, r);
                     }
                     String tarStr = userInput.next();
                     Unit tar = (new Cavalry(team, "", new Point(0,0), "", 1));
@@ -517,7 +506,7 @@ public class Main {
                     }
                 }
 
-            }//use all art
+            }
             }
 
         }

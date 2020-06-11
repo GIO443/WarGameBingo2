@@ -23,7 +23,7 @@ public class Infantry extends Unit {
             width = 3; //width along columns
 
             //adding attacks to attackList
-            attackList.add("Fire-by-Rank");
+            attackList.add("Rank");
             attackList.add("Melee");
         }
         if(type.equals("Light")){
@@ -36,7 +36,7 @@ public class Infantry extends Unit {
             width = 4; //width along columns
 
             //adding attacks to attackList
-            attackList.add("Fire-by-Rank");
+            attackList.add("Rank");
             attackList.add("Skirmish");
             attackList.add("Melee");
         }
@@ -50,7 +50,7 @@ public class Infantry extends Unit {
             width = 3; //width along columns
 
             //adding attacks to attackList
-            attackList.add("Fire-by-Rank");
+            attackList.add("Rank");
             attackList.add("Melee");
             attackList.add("Grenade");
         }

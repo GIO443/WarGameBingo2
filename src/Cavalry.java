@@ -17,7 +17,7 @@ public class Cavalry extends Unit{
             pop = 50;
             attackDice = (int) (50*pop/50+0.5);
             moveSpeed = 1440; //48m/s
-            range = moveSpeed;
+            range = moveSpeed/2;
             //Size based on pop
             length = (int)(java.lang.Math.sqrt(pop)+0.5); //length is along rows, will round appropriately
             width = length; //width along columns, is a square so length and width are equal
