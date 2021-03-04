@@ -2,139 +2,143 @@ import java.awt.*;
 import java.util.*;
 
 public class Main {
+    static Scanner userInput = new Scanner(System.in);
     static ArrayList<Unit> UnitList1 = new ArrayList<>();
     static ArrayList<Unit> UnitList2 = new ArrayList<>();
     static int infnum = 0;
     static int cavnum = 0;
     static int artnum = 0;
     static int whoesTurn = 0;
+
     public static void main(String[] args) {
         createGameUnits();
 
-        while((UnitList2.size() != 0) && (UnitList1.size() != 0)){
-
-            //removes dead units
-            removeDeadUnits(UnitList1);
-            removeDeadUnits(UnitList2);
-
-            //plays turns
-            if(whoesTurn%2 == 0) {
-                System.out.println("");
-                System.out.println("Team 1's turn.");
+        while ((UnitList2.size() != 0) && (UnitList1.size() != 0)) {
+            if (whoesTurn % 2 == 0)
                 playTurn(1);
-                whoesTurn++;
-            }
-
-            //removes dead units
-            removeDeadUnits(UnitList1);
-            removeDeadUnits(UnitList2);
-
-            //plays turns
-            if((whoesTurn%2 == 1) & (UnitList2.size() != 0)) {
-                System.out.println("");
-                System.out.println("Team 2's turn.");
+            else
                 playTurn(2);
-                whoesTurn++;
-            }
+            whoesTurn++;
 
-            //removes dead units
             removeDeadUnits(UnitList1);
             removeDeadUnits(UnitList2);
-
         }
-        if(UnitList2.size() == 0) {
-            System.out.println("Team 1 has won!");
+        if (UnitList2.size() == 0) {
+            sendUI("Team 1 has won!");
+        } else {
+            sendUI("Team 2 has won!");
         }
-        else{
-            System.out.println("Team 2 has won!");
-        }
-
 
     }
 
-    public static void createGameUnits(){
-        Scanner userInput = new Scanner(System.in);
-        for(int t = 1; t < 3; t++) { // which teams stuff is being created
-            System.out.println("Creating units for team " + t + ".");
-            System.out.println("Input number of infantry you want:");
-            int numofInf = userInput.nextInt();
-            System.out.println("Input number of cavalry you want:");
-            int numofCav = userInput.nextInt();
-            System.out.println("Input number of artillery you want:");
-            int numofArt = userInput.nextInt();
-            for (int i = 0; i < numofInf; i++) { // creating Infantry
+    private static void sendUI(String message) {
+        System.out.println("");
+        System.out.println(message);
+    }
+
+    private static String getUIString() {
+        return userInput.next();
+    }
+
+    private static int getUIInt() {
+        return userInput.nextInt();
+    }
+
+    public static void createGameUnits() {
+        createGameArmy(1);
+        createGameArmy(2);
+    }
+
+    public static void createGameArmy(int t) {
+        sendUI("Creating units for team " + t + ".");
+        sendUI("Input number of infantry you want:");
+        int numofInf = getUIInt();
+        sendUI("Input number of cavalry you want:");
+        int numofCav = getUIInt();
+        sendUI("Input number of artillery you want:");
+        int numofArt = getUIInt();
+
+
+        for (int i = 0; i < numofCav; i++) { // creating Cavalry
+            int dir;
+            if (t == 1) dir = 1;
+            else dir = 3;
+            sendUI("Cavalry creation begun.");
+            //User chooses position
+            sendUI("Give the position x-coordinate:");
+            int yValC = getUIInt();
+            sendUI("Now the y-coordinate:");
+            int xValC = getUIInt();
+            //user chooses type
+            sendUI("Potential types of Cavalry are: ");
+            sendUI("Light, and Heavy.");
+            String typeC = getUIString();
+            if (typeC.equals("Heavy") || typeC.equals("Light")) {
+                sendUI("Cavalry creation finished.");
+                createCav(t, new Point(xValC, yValC), typeC, dir);
+            } else {
+                sendUI("Cavalry creation failed, it will restart.");
+                i--;
+            }
+            i++;
+        }
+        for (int i = 0; i < numofArt; i++) { // creating Cavalry
+            int dir;
+            if (t == 1) dir = 1;
+            else dir = 3;
+            sendUI("Artillery creation begun.");
+            //User chooses position
+            sendUI("Give the position x-coordinate:");
+            int yValA = getUIInt();
+            sendUI("Now the y-coordinate:");
+            int xValA = getUIInt();
+            //user chooses type
+            sendUI("Types of Artillery are: ");
+            sendUI("Siege, Horse and Howitzer.");
+            String typeA = getUIString();
+            if (typeA.equals("Siege") || typeA.equals("Horse") || typeA.equals("Howitzer")) {
+                sendUI("Artillery creation finished.");
+                createArt(t, new Point(xValA, yValA), typeA, dir);
+            } else {
+                sendUI("Artillery creation failed, it will restart.");
+                i--;
+            }
+        }
+    }
+
+    public static void createGameUnit( int team, String kind,int numofUnit, String[] type){
+        sendUI(kind + " creation begun.");
+        for (int i = 0; i < numofUnit; i++) { // creating Infantry
                 int dir;
-                if (t == 1) dir = 1;
-                else dir = 3;
-                System.out.println("Infantry creation begun.");
+                if (team == 1)
+                    dir = 1;
+                else
+                    dir = 3;
                 //User chooses position
-                System.out.println("Give the position x-coordinate:");
-                int xValI = userInput.nextInt();
-                System.out.println("Now the y-coordinate:");
-                int yValI = userInput.nextInt();
+                sendUI("Give the position x-coordinate for " + kind + i);
+                int xValI = getUIInt();
+                sendUI("Now the y-coordinate:");
+                int yValI = getUIInt();
                 //User chooses type
-                System.out.println("Potential types of Infantry are: ");
-                System.out.println("Line, Grenadier, and Light.");
-                String typeI = userInput.next();
-                if(typeI.equals("Line") || typeI.equals("Grenadier") || typeI.equals("Light")) {
-                    System.out.println("Infantry creation finished.");
-                    createInf(t, new Point(xValI, yValI), typeI, dir);
+                sendUI("Potential types of " + kind + " are: ");
+                for (int j = 0; j < type.length; j++) {
+                    sendUI(type[j] + " ");
                 }
-                else{
-                    System.out.println("Infantry creation failed, it will restart.");
-                    i--;
+                sendUI(".");
+                String typeU = getUIString();
+                boolean created = false;
+                for (int k = 0; k < type.length; k++) {
+                    if (typeU.equals(type[k])) {
+                        sendUI("Infantry creation finished.");
+                        created = true;
+                        createInf(team, new Point(xValI, yValI), typeU, dir);
+                    }
                 }
+                if (!created)
+                    sendUI("Infantry creation failed, it will restart.");
             }
-
-            for (int i = 0; i < numofCav; i++) { // creating Cavalry
-                int dir;
-                if (t == 1) dir = 1;
-                else dir = 3;
-                System.out.println("Cavalry creation begun.");
-                //User chooses position
-                System.out.println("Give the position x-coordinate:");
-                int yValC = userInput.nextInt();
-                System.out.println("Now the y-coordinate:");
-                int xValC = userInput.nextInt();
-                //user chooses type
-                System.out.println("Potential types of Cavalry are: ");
-                System.out.println("Light, and Heavy.");
-                String typeC = userInput.next();
-                if(typeC.equals("Heavy") || typeC.equals("Light")) {
-                    System.out.println("Cavalry creation finished.");
-                    createCav(t, new Point(xValC, yValC), typeC, dir);
-                }
-                else{
-                    System.out.println("Cavalry creation failed, it will restart.");
-                    i--;
-                }
-            }
-
-            for (int i = 0; i < numofArt; i++) { // creating Cavalry
-                int dir;
-                if (t == 1) dir = 1;
-                else dir = 3;
-                System.out.println("Artillery creation begun.");
-                //User chooses position
-                System.out.println("Give the position x-coordinate:");
-                int yValA = userInput.nextInt();
-                System.out.println("Now the y-coordinate:");
-                int xValA = userInput.nextInt();
-                //user chooses type
-                System.out.println("Types of Artillery are: ");
-                System.out.println("Siege, Horse and Howitzer.");
-                String typeA = userInput.next();
-                if(typeA.equals("Siege") || typeA.equals("Horse") || typeA.equals("Howitzer")) {
-                    System.out.println("Artillery creation finished.");
-                    createArt(t, new Point(xValA, yValA), typeA, dir);
-                }
-                else{
-                    System.out.println("Artillery creation failed, it will restart.");
-                    i--;
-                }
-            }
-        }
     }
+
 
     public static void removeDeadUnits(ArrayList<Unit> a){
         //removes dead units
