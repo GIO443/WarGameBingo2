@@ -3,6 +3,8 @@ import java.util.ArrayList;
 
 public class Artillery extends Unit{
     int gunNum;
+    static final String[] subTypeAllowed = new String[]{"Siege", "Horse", "Howitzer"};
+
     public Artillery(int startTeam, String startName, Point startPosition, String startType, int startDirection){
         //creates a unit
         //basic stats

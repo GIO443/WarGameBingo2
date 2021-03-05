@@ -11,7 +11,7 @@ public class Main {
     static int whoesTurn = 0;
 
     public static void main(String[] args) {
-        createGameUnits();
+        createGameUnitsTeam();
 
         while ((UnitList2.size() != 0) && (UnitList1.size() != 0)) {
             if (whoesTurn % 2 == 0)
@@ -44,7 +44,7 @@ public class Main {
         return userInput.nextInt();
     }
 
-    public static void createGameUnits() {
+    public static void createGameUnitsTeam() {
         createGameArmy(1);
         createGameArmy(2);
     }
@@ -53,89 +53,69 @@ public class Main {
         sendUI("Creating units for team " + t + ".");
         sendUI("Input number of infantry you want:");
         int numofInf = getUIInt();
+        createGameUnits(t, "Infantry", numofInf);
+
         sendUI("Input number of cavalry you want:");
         int numofCav = getUIInt();
+        createGameUnits(t, "Cavalry", numofCav);
+
         sendUI("Input number of artillery you want:");
         int numofArt = getUIInt();
-
-
-        for (int i = 0; i < numofCav; i++) { // creating Cavalry
-            int dir;
-            if (t == 1) dir = 1;
-            else dir = 3;
-            sendUI("Cavalry creation begun.");
-            //User chooses position
-            sendUI("Give the position x-coordinate:");
-            int yValC = getUIInt();
-            sendUI("Now the y-coordinate:");
-            int xValC = getUIInt();
-            //user chooses type
-            sendUI("Potential types of Cavalry are: ");
-            sendUI("Light, and Heavy.");
-            String typeC = getUIString();
-            if (typeC.equals("Heavy") || typeC.equals("Light")) {
-                sendUI("Cavalry creation finished.");
-                createCav(t, new Point(xValC, yValC), typeC, dir);
-            } else {
-                sendUI("Cavalry creation failed, it will restart.");
-                i--;
-            }
-            i++;
-        }
-        for (int i = 0; i < numofArt; i++) { // creating Cavalry
-            int dir;
-            if (t == 1) dir = 1;
-            else dir = 3;
-            sendUI("Artillery creation begun.");
-            //User chooses position
-            sendUI("Give the position x-coordinate:");
-            int yValA = getUIInt();
-            sendUI("Now the y-coordinate:");
-            int xValA = getUIInt();
-            //user chooses type
-            sendUI("Types of Artillery are: ");
-            sendUI("Siege, Horse and Howitzer.");
-            String typeA = getUIString();
-            if (typeA.equals("Siege") || typeA.equals("Horse") || typeA.equals("Howitzer")) {
-                sendUI("Artillery creation finished.");
-                createArt(t, new Point(xValA, yValA), typeA, dir);
-            } else {
-                sendUI("Artillery creation failed, it will restart.");
-                i--;
-            }
-        }
+        createGameUnits(t, "Artillery", numofArt);
     }
 
-    public static void createGameUnit( int team, String kind,int numofUnit, String[] type){
-        sendUI(kind + " creation begun.");
-        for (int i = 0; i < numofUnit; i++) { // creating Infantry
+    public static void createGameUnits(int team, String kind, int numofUnit){
+        for (int i = 0; i < numofUnit; i++) { // creating Units
                 int dir;
                 if (team == 1)
                     dir = 1;
                 else
                     dir = 3;
                 //User chooses position
-                sendUI("Give the position x-coordinate for " + kind + i);
+                sendUI("Give the position x-coordinate for " + kind + (i+1));
                 int xValI = getUIInt();
                 sendUI("Now the y-coordinate:");
                 int yValI = getUIInt();
                 //User chooses type
+            String[] subTypeList = new String[]{};
+            switch (kind){
+                case "Infantry":
+                    subTypeList = Infantry.subTypeAllowed;
+                    break;
+                case "Cavalry":
+                    subTypeList = Cavalry.subTypeAllowed;
+                    break;
+                case "Artillery":
+                    subTypeList = Artillery.subTypeAllowed;
+                    break;
+            }
                 sendUI("Potential types of " + kind + " are: ");
-                for (int j = 0; j < type.length; j++) {
-                    sendUI(type[j] + " ");
+                for (int j = 0; j < subTypeList.length; j++) {
+                    sendUI(subTypeList[j]);
                 }
-                sendUI(".");
-                String typeU = getUIString();
                 boolean created = false;
-                for (int k = 0; k < type.length; k++) {
-                    if (typeU.equals(type[k])) {
-                        sendUI("Infantry creation finished.");
-                        created = true;
-                        createInf(team, new Point(xValI, yValI), typeU, dir);
+                while (!created) {
+                    sendUI("Please input one of the above:");
+                    String typeU = getUIString();
+                    for( int k = 0; k < subTypeList.length; k++){
+                        if (typeU.equals(subTypeList[k])) {
+                            created = true;
+                            switch (kind) {
+                                case "Infantry":
+                                    createInf(team, new Point(xValI, yValI), typeU, dir);
+                                    break;
+                                case "Cavalry":
+                                    createCav(team, new Point(xValI, yValI), typeU, dir);
+                                    break;
+                                case "Artillery":
+                                    createArt(team, new Point(xValI, yValI), typeU, dir);
+                                    break;
+                            }
+                        }
                     }
+                    if (!created)
+                        sendUI("Infantry creation failed, it will restart.");
                 }
-                if (!created)
-                    sendUI("Infantry creation failed, it will restart.");
             }
     }
 

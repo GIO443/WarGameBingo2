@@ -1,7 +1,7 @@
 import java.awt.*;
 import java.util.ArrayList;
 
-public class Unit extends Main{
+public class Unit{
     String name;
     Point position;
     String type;

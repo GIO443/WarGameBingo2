@@ -3,6 +3,8 @@ import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 public class Infantry extends Unit {
+    static final String[] subTypeAllowed = new String[]{"Light", "Line", "Grenadier"};
+
     public Infantry(int startTeam, String startName, Point startPosition, String startType, int startDirection){
         //creates a unit
         //basic stats
